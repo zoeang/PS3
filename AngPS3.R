@@ -19,32 +19,33 @@ X<-diag(nrow=4)
 sort<-function(name){
   UseMethod("sort", name)
 }
+
 ###generic.class
 #create a method with an object of calss student and a 4x4 matrix
-sort.student<- function(name,X){
-  a<-sample(1:100,4)
-  X<-diag(nrow=4)
-  scoresvec<-X%*%a
-  if(max(scoresvec)==scoresvec[1]){
+X<-diag(nrow=4)# this will be used as the argument
+sort.student<- function(name,X=diag(nrow=4)){#set default X
+  a<-sample(1:100,4) # a is a vector of the attributes
+  score<-X%*%a##calculate X^ta
+  if(max(scoresvec)==scoresvec[1]){# if the first value of score is largest, gryffindor
     print("GRYFFINDOR!")
-  } else if(max(scoresvec)==scoresvec[2]){
+  } else if(max(scoresvec)==scoresvec[2]){#if the second value of score is largest, slytherin
     print("SLYTHERIN!")
-  } else if ((max(scoresvec)==scoresvec[3])){
+  } else if ((max(scoresvec)==scoresvec[3])){#if the third value of score is largest, ravenclaw
     print('RAVENCLAW!')
-  } else if (max(scoresvec)==scoresvec[4]){
+  } else if (max(scoresvec)==scoresvec[4]){#if the fourth value of score is largest, hufflepuff
     print("Hufflepuff...")
   }
 }
-sort(name)
+sort.student(Zoe)
 
 #3 
-name1<-"Luna Lovegood"
-nameclass<-function(name){
-class(name1)<-c("student", sort.Hat(name))
-class(name1)
+nameclass<-function(nameofstudent){ 
+  class(nameofstudent)<-c("student", sort.student(name)) #assign two classes to one object
 }
-nameclass(name1)
-###Why is this printing two lines?
+nameclass(Zoe)
+class(Zoe)
+Zoe
+
 
 #4
 #create environments
@@ -56,44 +57,51 @@ Basement<-new.env()
 curfew<-function(x){
   UseMethod("curfew",x)
 }
+
 #create method for each house
 #Gryffindor
 
-class(name1)[[2]] %in% c("Hufflepuff...")
+#class(name1)[[2]] %in% c("Hufflepuff...")
 
-curfew.Gryffindor<-function(name1, env="Gryffindor_Tower"){
- if (sort.Hat(name1)=="GRYFFINDOR!"){
-   Gryffindor_Tower<-name1
+curfew.Gryffindor<-function(yourname){
+ nameclass(yourname)
+  if (class(yourname)[[2]] %in% c("GRYFFINDOR!")){
+   Gryffindor_Tower<-yourname
  } else{
    print("Intruder alert!")
  }
 }
-curfew.Gryffindor()
+curfew.Gryffindor(Zoe)
 # Slytherin
-curfew.Slytherin<-function(name1, env="Black_Lake"){
-  if(sort.Hat(name1)=="SLYTHERIN!"){
-    Black_Lake<-name1
-  } else {
+curfew.Slytherin<-function(yourname){
+  nameclass(yourname)
+  if (class(yourname)[[2]] %in% c("SLYTHERIN!")){
+    Black_Lake<-yourname
+  } else{
     print("Intruder alert!")
   }
 }
 
 #Ravenclaw
-curfew.Ravenclaw<-function(name1, env="Ravenclaw_Tower"){
-  if(sort.Hat(name1)=="RAVENCLAW!"){
-    Ravenclaw_Tower<-name1
-  } else {
+curfew.Ravenclaw<-function(yourname){
+  nameclass(yourname)
+  if (class(yourname)[[2]] %in% c("RAVENCLAW!")){
+    Ravenclaw_Tower<-yourname
+  } else{
     print("Intruder alert!")
   }
 }
 
 #HUfflepuff
-curfew.Hufflepuff<-function(name1, env="Hufflepuff"){
-  if(class(name1)[[2]] %in% c("Hufflepuff...")){
-    Basement<-name1
-  } else{print("Intruder alert!")}
+curfew.Hufflepuff<-function(yourname){
+  nameclass(yourname)
+  if (class(yourname)[[2]] %in% c("Hufflepuff...")){
+    Basement<-yourname
+  } else{
+    print("Intruder alert!")
+  }
 }
-curfew.Hufflepuff(name1)
+
 #######################################
 #1. create the object door, which is a vector of 1,2, and 3, with class "door"
 door<-structure(c(1:3), class="door")
