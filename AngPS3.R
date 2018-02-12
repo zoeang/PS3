@@ -66,7 +66,7 @@ curfew<-function(x){
 curfew.Gryffindor<-function(yourname){
  nameclass(yourname)
   if (class(yourname)[[2]] %in% c("GRYFFINDOR!")){
-   Gryffindor_Tower<-yourname
+   Gryffindor_Tower<-yourname #assign the name to the location if the class is of the proper house 
  } else{
    print("Intruder alert!")
  }
@@ -104,31 +104,18 @@ curfew.Hufflepuff<-function(yourname){
 
 #######################################
 #1. create the object door, which is a vector of 1,2, and 3, with class "door"
-door<-structure(c(1:3), class="door")
+pick<-structure(sample(1:3,1), class="door")
 
 #2. 
-#take a value stored in door
-picked<-sample(door,1)
-#draw a random number
-car<-sample(1:3,1)
-
-#compare
-if(picked==car){
-  print("Congratulations! You picked the correct door")
-} else {
-  print("Enjoy your goat!")
-}
-
 #To create a method for door, door needs to be a generic first(?)
-#create generic "door"
-####What method is door assigned to?
-doors<-function(x){
-  UseMethod("doors")
+
+PlayGame<-function(x){ 
+  UseMethod("PlayGame",x)
 }
 
 
 #Create the method
-door.PlayGame<-function(x){
+PlayGame.door<-function(x){ #create method "PlayGame" for objects of class door 
   #x is a number 1, 2, or 3 chosen by the player
   car<-sample(1:3,1) #this will randomly assign a number to car
   if(x==car){ #if loop to test if the player's number is the car door
@@ -159,27 +146,40 @@ door.PlayGame(2)
 setClass("doors",
          contains="numeric"
         )
+#What is the difference? I can "see it" when I run simdoor, but do not understand it conceptually 
+setClass("doors",
+         slots=list(pick="numeric")
+)
+
 simdoor<-new("doors", 1)
 simdoor
 
 
 #validation function
-setValidity("doors", function(object){
-  test<-all(object[1]==1 | object[1]==2 |object[1]==3)
-  if(!test==object[1]){
+setValidity("doors", function(x){
+  test<-all(x[1]==1 | x[1]==2 |x[1]==3) #object must be 1,2, or 3
+  if(!test==x){
     print("Not a valid value")
   }
 }
 )
 
+#New generic
+setGeneric("PlayGame", function(x="door") { #I have no clue as to what this does
+             standardGeneric("PlayGame")
+           })
+
+
 #New method
-setMethod("PlayGame", "door", function(x){
-  #x is a number 1, 2, or 3 chosen by the player
-  car<-sample(1:3,1) #this will randomly assign a number to car
-  if(x==car){ #if loop to test if the player's number is the car door
-    print("Congratulations! You picked the correct door")
-  } else {
-    print("Enjoy your goat!")
-  }
-}
-)
+
+setMethod("PlayGame", "door",function(x){
+            #x is a number 1, 2, or 3 chosen by the player
+            car<-sample(1:3,1) #this will randomly assign a number to car
+            if(x==car){ #if loop to test if the player's number is the car door
+              print("Congratulations! You picked the correct door")
+            } else {
+              print("Enjoy your goat!")
+            }
+          })
+
+
