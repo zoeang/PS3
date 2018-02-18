@@ -124,62 +124,79 @@ PlayGame.door<-function(x){ #create method "PlayGame" for objects of class door
     print("Enjoy your goat!")
   }
 }
-door.PlayGame(2)
+PlayGame.door(2)
 
 
 #######################
 #S4 
 #This creates the class door, correct?
-#setClass(Class="doors",
-         #representation = representation(
-          # picked="numeric",
-          # car="numeric"
-        # ),
-        # prototype= prototype(
-          # picked=sample(1:3,1),
-          # car=sample(1:3,1)
-        # )
-#)
-#new("doors")
 
-#constructor
-setClass("doors",
-         contains="numeric"
+setClass(Class="doors",
+         representation = representation(
+          picked="numeric", #class of the slot
+          car="numeric"
+        ),
+         prototype= prototype(
+          picked=sample(1:3,1), #name of slot = data
+          car=sample(1:3,1)
         )
-#What is the difference? I can "see it" when I run simdoor, but do not understand it conceptually 
-setClass("doors",
-         slots=list(pick="numeric")
 )
 
-simdoor<-new("doors", 1)
-simdoor
-
-
-#validation function
 setValidity("doors", function(x){
-  test<-all(x[1]==1 | x[1]==2 |x[1]==3) #object must be 1,2, or 3
-  if(!test==x){
+  test<-any(x@picked==1 | x@picked==2 |x@picked==3) #object must be 1,2, or 3
+  if(test==F){
     print("Not a valid value")
   }
 }
 )
 
-#New generic
-setGeneric("PlayGame", function(x="door") { #I have no clue as to what this does
+
+setMethod("initialize", "doors", function(.Object, ...){
+  value=callNextMethod() #have faith 
+  validObject(value)
+  return(value)
+})
+new("doors")
+
+new("doors", picked="m") #test the representation ; this will throw an error 
+new("doors", picked=9) #test the validity; this will throw an error
+
+#constructor
+
+#What is the difference? I can "see it" when I run simdoor, but do not understand it conceptually 
+
+
+
+
+#validation function
+
+#New generic always needed in S4
+setGeneric("PlayGame", function(x) { #set the name of the argument
              standardGeneric("PlayGame")
            })
 
 
 #New method
+testdoor<-new("doors", picked=3) #must specify slot
+testdoor@picked==2
 
-setMethod("PlayGame", "door",function(x){
+setMethod("PlayGame", "doors",function(x){ #the x must be the same as the genernic
             #x is a number 1, 2, or 3 chosen by the player
             car<-sample(1:3,1) #this will randomly assign a number to car
-            if(x==car){ #if loop to test if the player's number is the car door
-              print("Congratulations! You picked the correct door")
+            if(x@picked==car){ #if loop to test if the player's number is the car door
+              print("Congratulations! You picked the correct door  -- S4")
             } else {
-              print("Enjoy your goat!")
+              print("I got here")
+              print(x@picked)
+              print(car)
+              print("Enjoy your goat -- S4!")
             }
-          })
+          
+          x@car<-car
+          return(x)
+}
+          )
 
+testdoor
+PlayGame(testdoor)
 
